@@ -101,6 +101,9 @@ def tobs():
 @app.route("/api/v1.0/temp/<start>")
 @app.route("/api/v1.0/temp/<end>")
 def stats(start=None, end=None):
+    #open a session
+    session = session(engine)
+    
     sel = [func.min(measurement.tobs), func.avg(measurement.tobs), func.max(measurement.tobs)]           
     
     # Query to calculate TMIN, TAVG, and TMAX based on the specified date range
@@ -119,6 +122,9 @@ def stats(start=None, end=None):
     temp_stats['TMIN'] = results[0][0]
     temp_stats['TAVG'] = results[0][1]
     temp_stats['TMAX'] = results[0][2]
+
+    #close session
+    session.close()
     
     # Return the JSON representation of the result
     return jsonify(temp_stats)
